@@ -1,0 +1,420 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AuraRemind | Premium Birthday Reminders</title>
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <!-- Ambient Background Gradients -->
+  <div class="bg-glow bg-glow-1"></div>
+  <div class="bg-glow bg-glow-2"></div>
+  <div class="bg-glow bg-glow-3"></div>
+
+  <!-- Confetti Canvas -->
+  <canvas id="confetti-canvas"></canvas>
+
+  <!-- Notification Toast Container -->
+  <div id="toast-container" class="toast-container"></div>
+
+  <!-- ================= AUTH PAGE ================= -->
+  <main id="auth-page" class="auth-page">
+    <div class="auth-card glass-panel">
+      <div class="auth-header">
+        <div class="logo">
+          <svg class="logo-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+            <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>
+          </svg>
+          <span class="logo-text">AuraRemind</span>
+        </div>
+        <p class="auth-subtitle">Never miss a special moment. Keep your loved ones close.</p>
+      </div>
+
+      <!-- Auth Tabs -->
+      <div class="auth-tabs">
+        <button id="tab-login" class="auth-tab active" onclick="switchAuthTab('login')">Login</button>
+        <button id="tab-register" class="auth-tab" onclick="switchAuthTab('register')">Register</button>
+      </div>
+
+      <!-- Login Form -->
+      <form id="login-form" class="auth-form active" onsubmit="handleLogin(event)">
+        <div class="form-group">
+          <label for="login-username">Username</label>
+          <div class="input-wrapper">
+            <svg class="input-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+            <input type="text" id="login-username" placeholder="Enter admin or register" required autocomplete="username">
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="login-password">Password</label>
+          <div class="input-wrapper">
+            <svg class="input-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+            <input type="password" id="login-password" placeholder="••••••••" required autocomplete="current-password">
+            <button type="button" class="password-toggle" onclick="togglePasswordVisibility('login-password')">
+              <svg class="eye-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+            </button>
+          </div>
+        </div>
+
+        <div class="form-options">
+          <label class="checkbox-container">
+            <input type="checkbox" id="remember-me">
+            <span class="checkmark"></span>
+            Remember me
+          </label>
+          <a href="#" class="forgot-link" onclick="showForgotPassword(event)">Forgot password?</a>
+        </div>
+
+        <button type="submit" class="btn btn-primary btn-block">
+          <span>Sign In</span>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+        </button>
+      </form>
+
+      <!-- Register Form -->
+      <form id="register-form" class="auth-form" onsubmit="handleRegister(event)">
+        <div class="form-group">
+          <label for="register-username">Username</label>
+          <div class="input-wrapper">
+            <svg class="input-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+            <input type="text" id="register-username" placeholder="Choose a username" required autocomplete="username">
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="register-password">Password</label>
+          <div class="input-wrapper">
+            <svg class="input-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+            <input type="password" id="register-password" placeholder="••••••••" required autocomplete="new-password">
+            <button type="button" class="password-toggle" onclick="togglePasswordVisibility('register-password')">
+              <svg class="eye-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+            </button>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="register-confirm-password">Confirm Password</label>
+          <div class="input-wrapper">
+            <svg class="input-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+            <input type="password" id="register-confirm-password" placeholder="••••••••" required autocomplete="new-password">
+            <button type="button" class="password-toggle" onclick="togglePasswordVisibility('register-confirm-password')">
+              <svg class="eye-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+            </button>
+          </div>
+        </div>
+
+        <button type="submit" class="btn btn-primary btn-block">
+          <span>Create Account</span>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+        </button>
+      </form>
+    </div>
+  </main>
+
+  <!-- ================= DASHBOARD PAGE ================= -->
+  <div id="dashboard-page" class="dashboard-page hidden">
+    <!-- Navbar -->
+    <header class="navbar glass-panel">
+      <div class="nav-left">
+        <div class="logo">
+          <svg class="logo-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+            <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>
+          </svg>
+          <span class="logo-text">AuraRemind</span>
+        </div>
+      </div>
+      <div class="nav-right">
+        <div class="time-display glass-panel-sm" id="live-clock">
+          00:00:00 PM
+        </div>
+        <div class="user-profile">
+          <div class="avatar-sm" id="user-avatar">U</div>
+          <span id="user-greeting" class="user-greeting">Hi, User</span>
+        </div>
+        <button class="btn btn-icon-only btn-secondary" onclick="handleLogout()" title="Log out">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+        </button>
+      </div>
+    </header>
+
+    <!-- Main Container -->
+    <main class="dashboard-content">
+      <!-- Left Column: Spotlight & Stats -->
+      <section class="left-sidebar">
+        <!-- Next Birthday Spotlight Card -->
+        <div id="spotlight-card" class="spotlight-card glass-panel gradient-border-spotlight">
+          <div class="spotlight-header">
+            <span class="tag tag-spotlight">NEXT UPCOMING</span>
+            <div class="zodiac-badge" id="spotlight-zodiac-badge">
+              <span id="spotlight-zodiac-icon">✨</span>
+              <span id="spotlight-zodiac-name">Sign</span>
+            </div>
+          </div>
+          <div class="spotlight-body">
+            <div class="avatar-lg" id="spotlight-avatar">?</div>
+            <h2 id="spotlight-name">No Birthdays</h2>
+            <p id="spotlight-turning" class="spotlight-turning">Add a birthday to start tracking</p>
+            <p id="spotlight-date" class="spotlight-date">📅 --</p>
+          </div>
+          <div class="countdown-wrapper" id="countdown-container">
+            <div class="countdown-item">
+              <span class="countdown-val" id="countdown-days">00</span>
+              <span class="countdown-label">Days</span>
+            </div>
+            <div class="countdown-item">
+              <span class="countdown-val" id="countdown-hours">00</span>
+              <span class="countdown-label">Hours</span>
+            </div>
+            <div class="countdown-item">
+              <span class="countdown-val" id="countdown-minutes">00</span>
+              <span class="countdown-label">Min</span>
+            </div>
+            <div class="countdown-item">
+              <span class="countdown-val" id="countdown-seconds">00</span>
+              <span class="countdown-label">Sec</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Dashboard Quick Stats -->
+        <div class="stats-panel glass-panel">
+          <h3>Quick Overview</h3>
+          <div class="stats-grid">
+            <div class="stat-card glass-panel-sm">
+              <span class="stat-num" id="stat-total">0</span>
+              <span class="stat-label">Total Saved</span>
+            </div>
+            <div class="stat-card glass-panel-sm">
+              <span class="stat-num" id="stat-month">0</span>
+              <span class="stat-label">This Month</span>
+            </div>
+          </div>
+          <div class="action-buttons-group">
+            <button class="btn btn-secondary btn-block" onclick="exportData()" title="Export birthdays to JSON file">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+              <span>Backup (Export)</span>
+            </button>
+            <label class="btn btn-secondary btn-block file-input-label" title="Import birthdays from JSON file">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+              <span>Restore (Import)</span>
+              <input type="file" id="import-file" style="display: none;" onchange="importData(event)" accept=".json">
+            </label>
+          </div>
+        </div>
+      </section>
+
+      <!-- Right Column: Birthday Grid & Controls -->
+      <section class="main-content-panel">
+        <!-- Controls Bar -->
+        <div class="controls-bar glass-panel">
+          <div class="search-box">
+            <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+            <input type="text" id="search-input" placeholder="Search by name..." oninput="handleFilterSort()">
+          </div>
+
+          <div class="filters">
+            <div class="select-wrapper">
+              <select id="filter-category" onchange="handleFilterSort()">
+                <option value="all">All Categories</option>
+                <option value="Family">Family 💜</option>
+                <option value="Friend">Friends 💚</option>
+                <option value="Work">Work 💙</option>
+                <option value="Other">Other 💛</option>
+              </select>
+            </div>
+
+            <div class="select-wrapper">
+              <select id="sort-by" onchange="handleFilterSort()">
+                <option value="upcoming">Sort: Next Upcoming</option>
+                <option value="name">Sort: Name (A-Z)</option>
+                <option value="age">Sort: Age (Youngest)</option>
+                <option value="date">Sort: Calendar Date</option>
+              </select>
+            </div>
+
+            <button class="btn btn-primary" onclick="openModal('add-modal')">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" width="16" height="16"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+              <span>Add Birthday</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Birthday Grid -->
+        <div id="birthday-grid" class="birthday-grid">
+          <!-- Cards injected by JS -->
+          <div class="empty-state glass-panel">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="48" height="48">
+              <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+              <circle cx="12" cy="7" r="4"/>
+            </svg>
+            <p>No birthdays found. Start by adding one!</p>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <!-- ================= ADD MODAL ================= -->
+  <div id="add-modal" class="modal-overlay hidden">
+    <div class="modal-card glass-panel scale-up">
+      <div class="modal-header">
+        <h2>Add New Birthday</h2>
+        <button class="btn-close" onclick="closeModal('add-modal')">&times;</button>
+      </div>
+      <form id="add-birthday-form" onsubmit="handleAddBirthday(event)">
+        <div class="form-group">
+          <label for="add-name">Full Name</label>
+          <input type="text" id="add-name" required placeholder="e.g. Eleanor Vance">
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label for="add-date">Birthdate</label>
+            <input type="date" id="add-date" required>
+          </div>
+          <div class="form-group">
+            <label for="add-category">Category</label>
+            <div class="select-wrapper">
+              <select id="add-category" required>
+                <option value="Family">Family</option>
+                <option value="Friend">Friend</option>
+                <option value="Work">Work</option>
+                <option value="Other">Other</option>
+              </select>
+            </div>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label class="checkbox-container">
+              <input type="checkbox" id="add-omit-year" onchange="toggleYearInput('add')">
+              <span class="checkmark"></span>
+              Omit birth year (Hide age)
+            </label>
+          </div>
+          <div class="form-group">
+            <label for="add-color">Accent Theme</label>
+            <div class="color-picker-wrapper">
+              <div class="color-options">
+                <label class="color-option-label" style="--opt-color: #8b5cf6;" title="Violet">
+                  <input type="radio" name="add-color" value="#8b5cf6" checked>
+                  <span class="color-option-dot"></span>
+                </label>
+                <label class="color-option-label" style="--opt-color: #06b6d4;" title="Cyan">
+                  <input type="radio" name="add-color" value="#06b6d4">
+                  <span class="color-option-dot"></span>
+                </label>
+                <label class="color-option-label" style="--opt-color: #ec4899;" title="Rose">
+                  <input type="radio" name="add-color" value="#ec4899">
+                  <span class="color-option-dot"></span>
+                </label>
+                <label class="color-option-label" style="--opt-color: #10b981;" title="Emerald">
+                  <input type="radio" name="add-color" value="#10b981">
+                  <span class="color-option-dot"></span>
+                </label>
+                <label class="color-option-label" style="--opt-color: #f59e0b;" title="Amber">
+                  <input type="radio" name="add-color" value="#f59e0b">
+                  <span class="color-option-dot"></span>
+                </label>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="add-notes">Gift Ideas / Notes</label>
+          <textarea id="add-notes" rows="2" placeholder="e.g. Loves sci-fi books, prefers dark chocolate..."></textarea>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" onclick="closeModal('add-modal')">Cancel</button>
+          <button type="submit" class="btn btn-primary">Save Birthday</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ================= EDIT MODAL ================= -->
+  <div id="edit-modal" class="modal-overlay hidden">
+    <div class="modal-card glass-panel scale-up">
+      <div class="modal-header">
+        <h2>Edit Birthday</h2>
+        <button class="btn-close" onclick="closeModal('edit-modal')">&times;</button>
+      </div>
+      <form id="edit-birthday-form" onsubmit="handleEditBirthday(event)">
+        <input type="hidden" id="edit-id">
+        <div class="form-group">
+          <label for="edit-name">Full Name</label>
+          <input type="text" id="edit-name" required placeholder="e.g. Eleanor Vance">
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label for="edit-date">Birthdate</label>
+            <input type="date" id="edit-date" required>
+          </div>
+          <div class="form-group">
+            <label for="edit-category">Category</label>
+            <div class="select-wrapper">
+              <select id="edit-category" required>
+                <option value="Family">Family</option>
+                <option value="Friend">Friend</option>
+                <option value="Work">Work</option>
+                <option value="Other">Other</option>
+              </select>
+            </div>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label class="checkbox-container">
+              <input type="checkbox" id="edit-omit-year" onchange="toggleYearInput('edit')">
+              <span class="checkmark"></span>
+              Omit birth year (Hide age)
+            </label>
+          </div>
+          <div class="form-group">
+            <label for="edit-color">Accent Theme</label>
+            <div class="color-picker-wrapper">
+              <div class="color-options">
+                <label class="color-option-label" style="--opt-color: #8b5cf6;" title="Violet">
+                  <input type="radio" name="edit-color" value="#8b5cf6">
+                  <span class="color-option-dot"></span>
+                </label>
+                <label class="color-option-label" style="--opt-color: #06b6d4;" title="Cyan">
+                  <input type="radio" name="edit-color" value="#06b6d4">
+                  <span class="color-option-dot"></span>
+                </label>
+                <label class="color-option-label" style="--opt-color: #ec4899;" title="Rose">
+                  <input type="radio" name="edit-color" value="#ec4899">
+                  <span class="color-option-dot"></span>
+                </label>
+                <label class="color-option-label" style="--opt-color: #10b981;" title="Emerald">
+                  <input type="radio" name="edit-color" value="#10b981">
+                  <span class="color-option-dot"></span>
+                </label>
+                <label class="color-option-label" style="--opt-color: #f59e0b;" title="Amber">
+                  <input type="radio" name="edit-color" value="#f59e0b">
+                  <span class="color-option-dot"></span>
+                </label>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="edit-notes">Gift Ideas / Notes</label>
+          <textarea id="edit-notes" rows="2" placeholder="e.g. Loves sci-fi books, prefers dark chocolate..."></textarea>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" onclick="closeModal('edit-modal')">Cancel</button>
+          <button type="submit" class="btn btn-primary">Update Birthday</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
